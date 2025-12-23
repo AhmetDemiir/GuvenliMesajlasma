@@ -3,7 +3,7 @@ using System.Text;
 using System.Security.Cryptography; // Şifreleme kütüphanesi
 using System.IO;
 
-namespace ChatClient // Server tarafında burayı ChatServer yap!
+namespace ChatClient
 {
     public class DesHelper
     {
@@ -30,12 +30,11 @@ namespace ChatClient // Server tarafında burayı ChatServer yap!
             try
             {
                 byte[] anahtarBaytlari = AnahtariDuzenle(anahtar);
-                byte[] iv = anahtarBaytlari; // Başlangıç vektörü (Basit olsun diye anahtarla aynı yaptık)
+                byte[] iv = anahtarBaytlari;
 
                 DESCryptoServiceProvider des = new DESCryptoServiceProvider();
                 MemoryStream ms = new MemoryStream();
 
-                // Şifreleyiciyi oluştur
                 CryptoStream cs = new CryptoStream(ms, des.CreateEncryptor(anahtarBaytlari, iv), CryptoStreamMode.Write);
 
                 StreamWriter sw = new StreamWriter(cs);
@@ -66,7 +65,6 @@ namespace ChatClient // Server tarafında burayı ChatServer yap!
                 DESCryptoServiceProvider des = new DESCryptoServiceProvider();
                 MemoryStream ms = new MemoryStream(buffer);
 
-                // Çözücüyü oluştur
                 CryptoStream cs = new CryptoStream(ms, des.CreateDecryptor(anahtarBaytlari, iv), CryptoStreamMode.Read);
 
                 StreamReader sr = new StreamReader(cs);

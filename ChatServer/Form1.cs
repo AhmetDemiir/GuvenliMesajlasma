@@ -17,7 +17,7 @@ namespace ChatServer
         // 1. Online Kullanıcılar (Anlık bağlı olanlar)
         public static Dictionary<string, TcpClient> OnlineClients = new Dictionary<string, TcpClient>();
 
-        // 2. Kullanıcı Şifreleri (Offline olsa bile burada tutacağız ki şifreleyebilelim)
+        // 2. Kullanıcı Şifreleri
         public static Dictionary<string, string> ClientKeys = new Dictionary<string, string>();
 
         // 3. OFFLINE MESAJ KUTUSU (Kime -> Mesaj Listesi)
@@ -28,7 +28,6 @@ namespace ChatServer
             InitializeComponent();
             CheckForIllegalCrossThreadCalls = false;
         }
-
         private void Form1_Load(object sender, EventArgs e)
         {
             try
@@ -42,7 +41,6 @@ namespace ChatServer
             }
             catch (Exception ex) { MessageBox.Show("Server Hatası: " + ex.Message); }
         }
-
         private void ClientDinle()
         {
             while (true)
@@ -56,7 +54,6 @@ namespace ChatServer
                 catch { break; }
             }
         }
-
         private void IstemciYonet(TcpClient client)
         {
             string bagliKullaniciAdi = "";
@@ -76,34 +73,24 @@ namespace ChatServer
                     Bitmap gelenResim = new Bitmap(ms);
                     string cozulmusSifre = SteganographyHelper.Coz(gelenResim);
 
-                    // --- GÜVENLİK KONTROLÜ BAŞLANGICI ---
-
-                    // Soru: Bu isimde biri şu an içeride (Online) mı?
                     if (OnlineClients.ContainsKey(bagliKullaniciAdi))
                     {
-                        // Evet içeride biri var. Peki bu yeni gelen kişi, O kişi mi? (Şifre kontrolü)
                         string gercekSifre = ClientKeys[bagliKullaniciAdi];
 
                         if (gercekSifre != cozulmusSifre)
                         {
-                            // İsim aynı ama şifre farklı! Demek ki bu bir başkası (veya hacker).
                             txtLog.AppendText($">> [GÜVENLİK] {bagliKullaniciAdi} adına yanlış şifreyle giriş denemesi engellendi.\n");
 
-                            // Bağlantıyı direkt kesiyoruz (Client hata alıp kapanacak)
                             client.Close();
-                            return; // Fonksiyondan çık, içeri alma.
+                            return;
                         }
                         else
                         {
-                            // Şifre doğru! Demek ki kullanıcı düştü ve geri geldi.
                             txtLog.AppendText($">> {bagliKullaniciAdi} tekrar bağlandı (Oturum Tazeleme).\n");
-                            // Eski socket'i listeden silip yenisini ekleyeceğiz (aşağıda yapılıyor zaten)
                             OnlineClients.Remove(bagliKullaniciAdi);
                         }
                     }
-                    // --- GÜVENLİK KONTROLÜ BİTİŞİ ---
 
-                    // Online listesinden eskisini sil (Varsa) ama ClientKeys'e dokunma (güncelle)
                     if (OnlineClients.ContainsKey(bagliKullaniciAdi))
                         OnlineClients.Remove(bagliKullaniciAdi);
 
@@ -113,10 +100,8 @@ namespace ChatServer
                         ClientKeys.Add(bagliKullaniciAdi, cozulmusSifre);
 
                     OnlineClients.Add(bagliKullaniciAdi, client);
-                    // --- YENİ EKLENECEK SATIR ---
-                    // İstemciye "Giriş Başarılı, ekranı değiştirebilirsin" onayı veriyoruz.
+
                     yazici.Write("LOGIN_OK");
-                    // ---------------------------
 
                     txtLog.AppendText($">> {bagliKullaniciAdi} Online oldu. Şifre: {cozulmusSifre}\n");
 
@@ -128,11 +113,9 @@ namespace ChatServer
                         List<string> bekleyenMesajlar = OfflineMessages[bagliKullaniciAdi];
                         foreach (string msg in bekleyenMesajlar)
                         {
-                            // Mesaj formatı zaten şifreli ve hazırdır: "Gonderen|SifreliMesaj"
                             yazici.Write(msg);
                             txtLog.AppendText($"[OFFLINE İLETİLDİ] -> {bagliKullaniciAdi}\n");
                         }
-                        // Mesajları temizle
                         OfflineMessages.Remove(bagliKullaniciAdi);
                     }
                 }
@@ -163,7 +146,6 @@ namespace ChatServer
                         // ALICI ONLINE MI?
                         if (OnlineClients.ContainsKey(aliciIsmi))
                         {
-                            // Evet -> Hemen Gönder
                             try
                             {
                                 TcpClient aliciSocket = OnlineClients[aliciIsmi];
@@ -173,13 +155,11 @@ namespace ChatServer
                             }
                             catch
                             {
-                                // Gönderirken hata oldu, düşmüş olabilir -> Offline'a at
                                 OfflineaEkle(aliciIsmi, paket);
                             }
                         }
                         else
                         {
-                            // Hayır -> Offline Kutusuna At
                             OfflineaEkle(aliciIsmi, paket);
                             txtLog.AppendText($"   -> {aliciIsmi} çevrimdışı. Mesaj saklandı.\n");
                         }
@@ -194,15 +174,12 @@ namespace ChatServer
             {
                 if (bagliKullaniciAdi != "")
                 {
-                    OnlineClients.Remove(bagliKullaniciAdi); // Sadece Online'dan sil
-                    // ClientKeys'den SİLMİYORUZ ki offline mesaj atılabilsin.
+                    OnlineClients.Remove(bagliKullaniciAdi);
                     txtLog.AppendText($">> {bagliKullaniciAdi} bağlantısı koptu (Offline).\n");
                     KullaniciListesiniYayinla();
                 }
             }
         }
-
-        // Yardımcı Fonksiyon: Listeye mesaj ekler
         private void OfflineaEkle(string alici, string paket)
         {
             if (!OfflineMessages.ContainsKey(alici))
@@ -211,22 +188,15 @@ namespace ChatServer
             }
             OfflineMessages[alici].Add(paket);
         }
-
-        // TÜM KULLANICILARA GÜNCEL LİSTEYİ GÖNDEREN FONKSİYON
         private void KullaniciListesiniYayinla()
         {
-            // 1. Listeyi Hazırla: "Ahmet(Online);Ayse(Offline);Mehmet(Online)"
             string listeVerisi = "";
 
             foreach (var kullanici in ClientKeys.Keys)
             {
                 string durum = OnlineClients.ContainsKey(kullanici) ? "(Online)" : "(Offline)";
-                listeVerisi += kullanici + " " + durum + ";"; // İsimleri noktalı virgül ile ayırıyoruz
+                listeVerisi += kullanici + " " + durum + ";";
             }
-
-            // 2. Herkese Gönder
-            // Mesaj Formatı: "SERVER|LISTE_VERISI" 
-            // (Gönderen adı SERVER olunca client bunun liste olduğunu anlayacak)
 
             foreach (var client in OnlineClients.Values)
             {
@@ -236,7 +206,7 @@ namespace ChatServer
                     BinaryWriter bw = new BinaryWriter(ns);
                     bw.Write("SERVER|" + listeVerisi);
                 }
-                catch { /* Gönderemezse önemsiz, sonraki turda dener */ }
+                catch { }
             }
         }
     }

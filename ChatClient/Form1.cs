@@ -70,17 +70,11 @@ namespace ChatClient
                 yazici.Write(resimBaytlari.Length);
                 yazici.Write(resimBaytlari);
 
-                // -------------------------------------------------------------------
-                // --- BURASI DEĞİŞTİ: EKRANI HEMEN DEĞİŞTİRME, ÖNCE CEVAP BEKLE ---
-                // -------------------------------------------------------------------
-
-                // Sunucudan "LOGIN_OK" mesajı gelmesini bekliyoruz.
                 // Eğer şifre yanlışsa sunucu bağlantıyı kestiği için burası hata verir ve catch'e düşer.
                 string sunucuCevabi = okuyucu.ReadString();
 
                 if (sunucuCevabi == "LOGIN_OK")
                 {
-                    // ONAY GELDİ! Şimdi ekranı değiştirebiliriz.
                     groupBox2.Visible = false;
                     grpSohbet.Visible = true;
 
@@ -93,15 +87,11 @@ namespace ChatClient
                 }
                 else
                 {
-                    // Sunucu "LOGIN_OK" dışında bir şey dediyse (ihtimal düşük ama olsun)
                     MessageBox.Show("Sunucu girişi onaylamadı.");
                 }
-                // -------------------------------------------------------------------
             }
             catch (Exception ex)
             {
-                // Eğer şifre yanlışsa sunucu bağlantıyı "küt" diye kestiği için
-                // okuyucu.ReadString() satırı hata verecek ve buraya düşecektir.
                 MessageBox.Show("Giriş Başarısız!\nSunucu bağlantıyı reddetti.\n(İsim kullanımda olabilir veya şifre yanlıştır.)");
             }
         }
@@ -126,7 +116,7 @@ namespace ChatClient
 
                         // ListBox'ı güncelle (Invoke ile arayüze erişiyoruz)
                         lstKullanicilar.Invoke((MethodInvoker)delegate {
-                            lstKullanicilar.Items.Clear(); // Eskileri sil
+                            lstKullanicilar.Items.Clear();
                             foreach (string k in kullanicilar)
                             {
                                 if (!string.IsNullOrEmpty(k))
@@ -158,7 +148,7 @@ namespace ChatClient
         private void btnGonder_Click(object sender, EventArgs e)
         {
             // 1. Kime göndereceğiz? (Yeni kutudan alıyoruz)
-            string alici = txtAlici.Text.Trim(); // Trim boşlukları siler
+            string alici = txtAlici.Text.Trim();
             string mesaj = txtMesaj.Text.Trim();
 
             if (string.IsNullOrEmpty(alici) || string.IsNullOrEmpty(mesaj))
@@ -168,17 +158,14 @@ namespace ChatClient
             }
 
             // 2. Mesajı Formatla ve Şifrele
-            // Kendi şifremizle mesajı şifreliyoruz
             string sifreliMesaj = DesHelper.Sifrele(mesaj, txtSifre.Text);
 
             // 3. Sunucuya Gönder: "ALICI|SIFRELI_MESAJ"
-            // Artık elle : koymana gerek yok, kod koyuyor.
             yazici.Write(alici + "|" + sifreliMesaj);
 
             // 4. Ekrana Yazdır
             rtbMesajlar.AppendText("Ben -> " + alici + ": " + mesaj + "\n");
 
-            // Mesaj kutusunu temizle ama alıcı ismi kalsın (sohbet sürsün diye)
             txtMesaj.Clear();
         }
 
@@ -186,22 +173,19 @@ namespace ChatClient
         {
             if (istemci != null && istemci.Connected)
             {
-                istemci.Close(); // Bağlantıyı temiz bir şekilde kes
+                istemci.Close();
             }
-            Application.Exit(); // Uygulamayı tamamen kapat
+            Application.Exit();
         }
 
         private void lstKullanicilar_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (lstKullanicilar.SelectedItem == null) return;
 
-            // Seçilen satır: "Ahmet (Online)"
             string secilen = lstKullanicilar.SelectedItem.ToString();
 
-            // Sadece ismi al (Boşluğa kadar olan kısmı)
             string isim = secilen.Split(' ')[0];
 
-            // Kime kutusuna yaz
             txtAlici.Text = isim;
         }
     }

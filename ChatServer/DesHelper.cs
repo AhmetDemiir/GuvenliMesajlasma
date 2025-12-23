@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Text;
-using System.Security.Cryptography; // Şifreleme kütüphanesi
+using System.Security.Cryptography;
 using System.IO;
 
-namespace ChatServer // Server tarafında burayı ChatServer yap!
+namespace ChatServer
 {
     public class DesHelper
     {
@@ -12,14 +12,14 @@ namespace ChatServer // Server tarafında burayı ChatServer yap!
         private static byte[] AnahtariDuzenle(string anahtar)
         {
             byte[] anahtarBaytlari = Encoding.UTF8.GetBytes(anahtar);
-            byte[] tamAnahtar = new byte[8]; // DES için 8 bayt şart
+            byte[] tamAnahtar = new byte[8];
 
             for (int i = 0; i < 8; i++)
             {
                 if (i < anahtarBaytlari.Length)
                     tamAnahtar[i] = anahtarBaytlari[i];
                 else
-                    tamAnahtar[i] = 32; // Boşluk (Space) karakteri ile doldur
+                    tamAnahtar[i] = 32;
             }
             return tamAnahtar;
         }
@@ -30,12 +30,11 @@ namespace ChatServer // Server tarafında burayı ChatServer yap!
             try
             {
                 byte[] anahtarBaytlari = AnahtariDuzenle(anahtar);
-                byte[] iv = anahtarBaytlari; // Başlangıç vektörü (Basit olsun diye anahtarla aynı yaptık)
+                byte[] iv = anahtarBaytlari;
 
                 DESCryptoServiceProvider des = new DESCryptoServiceProvider();
                 MemoryStream ms = new MemoryStream();
 
-                // Şifreleyiciyi oluştur
                 CryptoStream cs = new CryptoStream(ms, des.CreateEncryptor(anahtarBaytlari, iv), CryptoStreamMode.Write);
 
                 StreamWriter sw = new StreamWriter(cs);
@@ -66,7 +65,6 @@ namespace ChatServer // Server tarafında burayı ChatServer yap!
                 DESCryptoServiceProvider des = new DESCryptoServiceProvider();
                 MemoryStream ms = new MemoryStream(buffer);
 
-                // Çözücüyü oluştur
                 CryptoStream cs = new CryptoStream(ms, des.CreateDecryptor(anahtarBaytlari, iv), CryptoStreamMode.Read);
 
                 StreamReader sr = new StreamReader(cs);
