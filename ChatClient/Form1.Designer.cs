@@ -36,8 +36,16 @@
             this.label4 = new System.Windows.Forms.Label();
             this.txtKullaniciAdi = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
+            this.grpSohbet = new System.Windows.Forms.GroupBox();
+            this.btnGonder = new System.Windows.Forms.Button();
+            this.txtMesaj = new System.Windows.Forms.TextBox();
+            this.rtbMesajlar = new System.Windows.Forms.RichTextBox();
+            this.lstKullanicilar = new System.Windows.Forms.ListBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.txtAlici = new System.Windows.Forms.TextBox();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbProfilResmi)).BeginInit();
+            this.grpSohbet.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox2
@@ -49,9 +57,9 @@
             this.groupBox2.Controls.Add(this.label4);
             this.groupBox2.Controls.Add(this.txtKullaniciAdi);
             this.groupBox2.Controls.Add(this.label3);
-            this.groupBox2.Location = new System.Drawing.Point(131, 45);
+            this.groupBox2.Location = new System.Drawing.Point(12, 12);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(1023, 710);
+            this.groupBox2.Size = new System.Drawing.Size(859, 710);
             this.groupBox2.TabIndex = 2;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Giriş Yap";
@@ -117,17 +125,89 @@
             this.label3.TabIndex = 0;
             this.label3.Text = "Kullanıcı Adı:";
             // 
+            // grpSohbet
+            // 
+            this.grpSohbet.Controls.Add(this.txtAlici);
+            this.grpSohbet.Controls.Add(this.label1);
+            this.grpSohbet.Controls.Add(this.btnGonder);
+            this.grpSohbet.Controls.Add(this.txtMesaj);
+            this.grpSohbet.Controls.Add(this.rtbMesajlar);
+            this.grpSohbet.Controls.Add(this.lstKullanicilar);
+            this.grpSohbet.Location = new System.Drawing.Point(905, 33);
+            this.grpSohbet.Name = "grpSohbet";
+            this.grpSohbet.Size = new System.Drawing.Size(826, 689);
+            this.grpSohbet.TabIndex = 4;
+            this.grpSohbet.TabStop = false;
+            this.grpSohbet.Text = "Sohbet Ekranı";
+            this.grpSohbet.Visible = false;
+            // 
+            // btnGonder
+            // 
+            this.btnGonder.Location = new System.Drawing.Point(33, 367);
+            this.btnGonder.Name = "btnGonder";
+            this.btnGonder.Size = new System.Drawing.Size(159, 37);
+            this.btnGonder.TabIndex = 9;
+            this.btnGonder.Text = "Gönder";
+            this.btnGonder.UseVisualStyleBackColor = true;
+            this.btnGonder.Click += new System.EventHandler(this.btnGonder_Click);
+            // 
+            // txtMesaj
+            // 
+            this.txtMesaj.Location = new System.Drawing.Point(6, 327);
+            this.txtMesaj.Name = "txtMesaj";
+            this.txtMesaj.Size = new System.Drawing.Size(226, 22);
+            this.txtMesaj.TabIndex = 8;
+            // 
+            // rtbMesajlar
+            // 
+            this.rtbMesajlar.Location = new System.Drawing.Point(261, 23);
+            this.rtbMesajlar.Name = "rtbMesajlar";
+            this.rtbMesajlar.Size = new System.Drawing.Size(470, 326);
+            this.rtbMesajlar.TabIndex = 7;
+            this.rtbMesajlar.Text = "";
+            // 
+            // lstKullanicilar
+            // 
+            this.lstKullanicilar.FormattingEnabled = true;
+            this.lstKullanicilar.ItemHeight = 16;
+            this.lstKullanicilar.Location = new System.Drawing.Point(6, 21);
+            this.lstKullanicilar.Name = "lstKullanicilar";
+            this.lstKullanicilar.Size = new System.Drawing.Size(204, 244);
+            this.lstKullanicilar.TabIndex = 0;
+            this.lstKullanicilar.SelectedIndexChanged += new System.EventHandler(this.lstKullanicilar_SelectedIndexChanged);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(16, 299);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(40, 16);
+            this.label1.TabIndex = 10;
+            this.label1.Text = "Kime:";
+            // 
+            // txtAlici
+            // 
+            this.txtAlici.Location = new System.Drawing.Point(79, 296);
+            this.txtAlici.Name = "txtAlici";
+            this.txtAlici.Size = new System.Drawing.Size(100, 22);
+            this.txtAlici.TabIndex = 11;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1349, 826);
+            this.ClientSize = new System.Drawing.Size(1777, 826);
+            this.Controls.Add(this.grpSohbet);
             this.Controls.Add(this.groupBox2);
             this.Name = "Form1";
             this.Text = "Form1";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
+            this.Load += new System.EventHandler(this.Form1_Load);
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbProfilResmi)).EndInit();
+            this.grpSohbet.ResumeLayout(false);
+            this.grpSohbet.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -142,5 +222,12 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox txtKullaniciAdi;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.GroupBox grpSohbet;
+        private System.Windows.Forms.Button btnGonder;
+        private System.Windows.Forms.TextBox txtMesaj;
+        private System.Windows.Forms.RichTextBox rtbMesajlar;
+        private System.Windows.Forms.ListBox lstKullanicilar;
+        private System.Windows.Forms.TextBox txtAlici;
+        private System.Windows.Forms.Label label1;
     }
 }
