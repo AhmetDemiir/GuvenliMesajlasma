@@ -1,7 +1,3 @@
-### 2. GuvenliMesajlasma (C#)
-Client-Server (İstemci-Sunucu) mimarisini ve şifreleme mantığını vurgulayan bir yapı hazırladım.
-
-```markdown
 # 🔐 Güvenli Mesajlaşma Uygulaması
 
 <p align="left">
@@ -26,6 +22,7 @@ Proje **İstemci-Sunucu (Client-Server)** mimarisi üzerine inşa edilmiştir ve
 
 ## 🚀 Başlarken
 Projeyi yerel ortamınızda çalıştırmak için:
+
 1. Repoyu klonlayın:
    ```bash
    git clone [https://github.com/AhmetDemiir/GuvenliMesajlasma.git](https://github.com/AhmetDemiir/GuvenliMesajlasma.git)
